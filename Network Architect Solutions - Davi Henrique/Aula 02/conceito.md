@@ -38,3 +38,4 @@
 
 ## Pesquisar:
   * Wireshark: analiza o trafrgo da rede
+  * SHA256: nova forma de criptografia em redes (forma de criptografia atual)
