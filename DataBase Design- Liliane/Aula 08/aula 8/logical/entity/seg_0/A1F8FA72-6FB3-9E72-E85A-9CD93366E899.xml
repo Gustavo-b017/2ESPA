@@ -1,0 +1,87 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="A1F8FA72-6FB3-9E72-E85A-9CD93366E899" name="motorista">
+<createdBy>labsfiap</createdBy>
+<createdTime>2024-10-08 12:07:48 UTC</createdTime>
+<ownerDesignName>aula 8 </ownerDesignName>
+<engineerTo>
+<item key="1E0F696D-9BE9-2EDB-9214-20560D1230E4" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id_motorista" id="F1A191AB-B26D-8C21-F1F9-3E4F2CB0BF26">
+<createdBy>labsfiap</createdBy>
+<createdTime>2024-10-08 12:07:57 UTC</createdTime>
+<ownerDesignName>aula 8 </ownerDesignName>
+<engineerTo>
+<item key="1E0F696D-9BE9-2EDB-9214-20560D1230E4" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="nome" id="636A3E69-05F6-5F1E-967D-51A82C5B620C">
+<createdBy>labsfiap</createdBy>
+<createdTime>2024-10-08 12:08:20 UTC</createdTime>
+<ownerDesignName>aula 8 </ownerDesignName>
+<engineerTo>
+<item key="1E0F696D-9BE9-2EDB-9214-20560D1230E4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50</dataTypeSize>
+<ownDataTypeParameters>50,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fone" id="5EC3F13D-D940-F4DF-FAD3-02D12A852028">
+<createdBy>labsfiap</createdBy>
+<createdTime>2024-10-08 12:08:32 UTC</createdTime>
+<ownerDesignName>aula 8 </ownerDesignName>
+<engineerTo>
+<item key="1E0F696D-9BE9-2EDB-9214-20560D1230E4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>16</dataTypeSize>
+<ownDataTypeParameters>16,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id_veiculo" id="B2FE9DC4-3671-D721-A72A-BB148CB27791">
+<createdBy>labsfiap</createdBy>
+<createdTime>2024-10-08 12:10:34 UTC</createdTime>
+<generatorID>9DE03558-F239-CF3E-1FDD-F5B231FD1264</generatorID>
+<ownerDesignName>aula 8 </ownerDesignName>
+<engineerTo>
+<item key="1E0F696D-9BE9-2EDB-9214-20560D1230E4" value="true"/>
+</engineerTo>
+<referedAttribute>09DE84FE-1BB1-1673-8CC3-34B2AACEB848</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="56728C2F-6076-C071-886D-CC56B8DEC82D" name="motorista PK">
+<createdBy>labsfiap</createdBy>
+<createdTime>2024-10-08 12:08:11 UTC</createdTime>
+<ownerDesignName>aula 8 </ownerDesignName>
+<engineerTo>
+<item key="1E0F696D-9BE9-2EDB-9214-20560D1230E4" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>F1A191AB-B26D-8C21-F1F9-3E4F2CB0BF26</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>
