@@ -1,1 +1,33 @@
 pip install -r requirements.txt
+
+
+enable
+configure terminal
+
+
+interface range fa0/1 - 2
+switchport mode access
+exit
+
+
+interface fa0/1
+switchport port-security
+switchport port-security mac-address 00090.2B6C.2EA2
+switchport port-security violation shutdown
+exit
+
+
+interface fa0/2
+switchport port-security
+switchport port-security mac-address 0001.C946.E097
+switchport port-security violation shutdown
+exit
+
+
+interface fa0/1
+switchport port-security maximum 1
+exit
+
+interface fa0/2
+switchport port-security maximum 1
+exit
