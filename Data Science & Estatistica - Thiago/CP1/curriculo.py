@@ -1,7 +1,5 @@
 import streamlit as st
-import yfinance as yf
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 import numpy as np
 
@@ -12,23 +10,16 @@ st.set_page_config(page_title="Currículo - Gustavo Assumção", layout="wide")
 st.sidebar.title("Navegação")
 pagina = st.sidebar.radio("Ir para:", ["Home", "Formação e Experiência", "Skills", "Análise de Dados"])
 
-# Função para carregar dados financeiros
-@st.cache_data
-def carregar_dados(ticker):
-    dados = yf.download(ticker, start="2020-01-01", end="2025-01-01")
-    return dados
-
-
 # Home
 if pagina == "Home":
     st.title("Gustavo Bezerra Assumção")
+    st.image("perfil na floresta.png", width=150)
     st.write("São Paulo, SP, Brasil")
     st.write("📧 Email: gustavobassumcaog@gmail.com")
     st.write("🔗 [LinkedIn](https://www.linkedin.com/in/gustavo-bezerra-assum%C3%A7%C3%A3o-829202289/)")
-
     st.header("Sobre Mim")
     st.write("""
-    Meu nome é Gustavo Bezerra Assumção, e sou estudante de Engenharia de Software na FIAP desde 2023. Nascido em Palmas - TO, atualmente resido em São Paulo - SP.
+    EU sou estudante de Engenharia de Software na FIAP desde 2023. Nascido em Palmas - TO, atualmente resido em São Paulo - SP.
 
 Características Pessoais:
  
@@ -113,53 +104,140 @@ elif pagina == "Skills":
     - 🇨🇳 Mandarim – Iniciante
     """)
 
-# Análise de Dados
 elif pagina == "Análise de Dados":
-    st.title("Análise de Dados: BTG Pactual")
-
-    st.subheader("Introdução ao Problema")
+    st.title("Análise de Dados - Dados de Ações")
+    
+    st.header("1. Apresentação dos Dados e Tipos de Variáveis")
     st.write("""
-    O objetivo desta análise é estudar o desempenho histórico das ações do BTG Pactual (BPAC11) e sua relação com o mercado financeiro brasileiro.
+    Este conjunto de dados contém informações históricas de uma ação, com as seguintes colunas:
+    - **Date:** Data da negociação.
+    - **Open, High, Low, Close:** Preços de abertura, máxima, mínima e fechamento, que são variáveis quantitativas contínuas.
+    - **Volume:** Quantidade de ações negociadas (variável quantitativa discreta).
+    - **Dividends:** Dividendos pagos (normalmente nulos ou discretos).
+    - **Stock Splits:** Eventos de desdobramento de ações (contagem de eventos discretos).
     """)
-
-    # Carregar dados do BTG Pactual
-    dados_btg = carregar_dados("BPAC11.SA")
-
-    # Gráfico de Preço de Fechamento
-    st.subheader("Preço de Fechamento ao Longo do Tempo")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(dados_btg.index, dados_btg['Close'], label='BPAC11 - Preço de Fechamento')
-    ax.set_xlabel('Data')
-    ax.set_ylabel('Preço de Fechamento (R$)')
-    ax.legend()
+    
+    import pandas as pd
+    import numpy as np
+    df = pd.read_excel("historico_btg_pactual.xlsx", parse_dates=["Date"])
+    st.success("Conjunto de dados 'historico_btg_pactual.xlsx' carregado com sucesso.")
+    
+    st.dataframe(df.head())
+    st.write("""
+    **Interpretação dos Tipos de Dados:**
+    - Os preços (Open, High, Low, Close) são dados quantitativos contínuos.
+    - O Volume, Dividends e Stock Splits são dados quantitativos discretos.
+    """)
+    
+    st.subheader("Perguntas Relevantes para a Análise")
+    st.write("""
+    - **Qual é a distribuição dos preços de fechamento?**  
+      Analisar se os preços de fechamento seguem uma distribuição normal.
+      
+    - **Como se comportam os retornos diários?**  
+      Calcular os retornos diários (variação percentual entre Open e Close) e avaliar sua distribuição.
+      
+    - **Existe correlação entre o volume negociado e os retornos diários?**  
+      Investigar a relação entre a quantidade negociada e a variação percentual.
+      
+    - **Qual a frequência de dias em que o preço fechou acima da abertura?**  
+      Criar uma variável binária e analisar a contagem semanal desses eventos.
+    """)
+    
+    # Filtrar dados do último ano para as análises estatísticas e probabilísticas
+    max_date = df["Date"].max()
+    df_last_year = df[df["Date"] >= (max_date - pd.DateOffset(years=1))].copy()
+    df_last_year["Return"] = (df_last_year["Close"] - df_last_year["Open"]) / df_last_year["Open"]
+    
+    st.header("2. Medidas Centrais, Dispersão e Correlação (Último Ano)")
+    
+    st.write("**Estatísticas Descritivas do Conjunto de Dados:**")
+    desc = df_last_year.describe()
+    st.write(desc)
+    st.write("""
+    **Análise:**  
+    Esta tabela resume as principais medidas de tendência central e dispersão para as variáveis numéricas do último ano.  
+    Ela permite responder perguntas como:
+    - Qual é a média e mediana dos preços e volumes?
+    - Qual o nível de variabilidade (desvio padrão) nos preços?
+    - Há presença de valores extremos que possam afetar a análise?
+    Esses insights são fundamentais para compreender a distribuição dos dados e identificar possíveis necessidades de transformação ou análise adicional.
+    """)
+    
+    st.write("**Estatísticas dos Retornos Diários:**")
+    ret_desc = df_last_year["Return"].describe()
+    st.write(ret_desc)
+    st.write("""
+    **Análise dos Retornos Diários:**  
+    Ao calcular os retornos diários – a variação percentual entre os preços de fechamento e abertura – obtemos uma visão da volatilidade do ativo.  
+    Essa tabela nos permite:
+    - Avaliar a média dos retornos, importante para entender a rentabilidade diária.
+    - Verificar a dispersão dos retornos, que indica o nível de risco.
+    - Investigar a existência de assimetria, sugerindo um viés em movimentos positivos ou negativos.
+    Tais informações são essenciais para modelar o risco e a performance do ativo.
+    """)
+    
+    st.write("**Matriz de Correlação:**")
+    corr = df_last_year.corr()
+    st.write(corr)
+    st.write("""
+    **Análise da Matriz de Correlação:**  
+    A matriz de correlação mostra as relações lineares entre as variáveis do conjunto de dados do último ano.  
+    Por exemplo:
+    - Uma forte correlação entre 'Open' e 'Close' indica consistência no comportamento dos preços.
+    - A relação entre 'Volume' e 'Return' pode sugerir se um maior volume está associado a maiores variações percentuais.
+    Essa análise é crucial para identificar interdependências entre variáveis e para fundamentar possíveis modelos preditivos.
+    """)
+    
+    st.header("3. Aplicação de Distribuições Probabilísticas (Último Ano)")
+    st.write("""
+    Utilizando somente os dados do último ano, aplicamos duas distribuições:
+    - **Normal:** Para modelar os **Retornos Diários**, permitindo avaliar a simetria e a volatilidade dos movimentos de preços.
+    - **Poisson:** Para modelar a contagem semanal de dias em que o preço fechou acima do de abertura, ajudando a compreender a frequência desses eventos.
+    """)
+    
+    # Distribuição Normal para os Retornos Diários com dados do último ano
+    st.subheader("Distribuição Normal - Retornos Diários (Último Ano)")
+    from scipy.stats import norm
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(df_last_year["Return"], bins=20, density=True, alpha=0.6, color='green')
+    mu, std = norm.fit(df_last_year["Return"])
+    xmin, xmax = ax.get_xlim()
+    x = np.linspace(xmin, xmax, 100)
+    p = norm.pdf(x, mu, std)
+    ax.plot(x, p, 'k', linewidth=2)
+    ax.set_title(f"Distribuição Normal dos Retornos Diários (Último Ano)\n(média = {mu:.4f}, dp = {std:.4f})")
     st.pyplot(fig)
+    
+    # Distribuição de Poisson para a contagem de dias de alta com dados do último ano
+    st.subheader("Distribuição de Poisson - Contagem de Dias de Alta (Último Ano)")
+    st.write("""
+    Consideramos cada dia em que o preço de fechamento supera o de abertura como um evento de "alta".  
+    Agregamos esses eventos por semana para obter a contagem semanal, que é modelada com uma distribuição de Poisson.
+    """)
+    df_last_year["Up_Day"] = (df_last_year["Close"] > df_last_year["Open"]).astype(int)
+    df_last_year["Week"] = pd.to_datetime(df_last_year["Date"]).dt.isocalendar().week
+    weekly_up_year = df_last_year.groupby("Week")["Up_Day"].sum().reset_index()
+    
+    st.write("**Contagem Semanal de Dias de Alta (Último Ano):**")
+    st.write(weekly_up_year)
+    
+    from scipy.stats import poisson
+    fig2, ax2 = plt.subplots()
+    lam = weekly_up_year["Up_Day"].mean()
+    count_values = weekly_up_year["Up_Day"].value_counts().sort_index()
+    ax2.bar(count_values.index, count_values.values, alpha=0.6, color='blue', label='Dados Observados')
+    x_poisson = np.arange(weekly_up_year["Up_Day"].min(), weekly_up_year["Up_Day"].max()+1)
+    poisson_probs = poisson.pmf(x_poisson, lam) * len(weekly_up_year)
+    ax2.plot(x_poisson, poisson_probs, 'ro-', label='Distribuição Poisson')
+    ax2.set_title(f"Distribuição de Poisson para Dias de Alta Semanais (Último Ano)\n(lambda = {lam:.2f})")
+    ax2.set_xlabel("Número de Dias de Alta por Semana")
+    ax2.set_ylabel("Frequência")
+    ax2.legend()
+    st.pyplot(fig2)
+    
 
-    # Retornos Diários
-    dados_btg['Retorno Diário'] = dados_btg['Close'].pct_change()
-    st.subheader("Histograma dos Retornos Diários")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    sns.histplot(dados_btg['Retorno Diário'].dropna(), bins=50, kde=True, ax=ax)
-    ax.set_xlabel('Retorno Diário')
-    ax.set_ylabel('Frequência')
-    st.pyplot(fig)
-
-    # Média e Desvio Padrão dos Retornos
-    media_retorno = dados_btg['Retorno Diário'].mean()
-    desvio_retorno = dados_btg['Retorno Diário'].std()
-    st.write(f"**Média dos Retornos Diários:** {media_retorno:.5f}")
-    st.write(f"**Desvio Padrão dos Retornos Diários:** {desvio_retorno:.5f}")
-
-    # Gráfico de Retornos Acumulados
-    dados_btg['Retorno Acumulado'] = (1 + dados_btg['Retorno Diário']).cumprod() - 1
-    st.subheader("Retorno Acumulado ao Longo do Tempo")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(dados_btg.index, dados_btg['Retorno Acumulado'], label='BPAC11 - Retorno Acumulado')
-    ax.set_xlabel('Data')
-    ax.set_ylabel('Retorno Acumulado')
-    ax.legend()
-    st.pyplot(fig)
-
-    st.write("Esta análise proporciona uma visão geral do desempenho histórico das ações do BTG Pactual, utilizando dados reais extraídos de fontes confiáveis.")
 
 # Executar o app:
 # No terminal, rode: streamlit run curriculo.py
