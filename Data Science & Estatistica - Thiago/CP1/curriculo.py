@@ -108,18 +108,21 @@ elif pagina == "Análise de Dados":
     st.title("Análise de Dados - Dados de Ações")
     
     st.header("1. Apresentação dos Dados e Tipos de Variáveis")
-    st.write("""    
-        Este conjunto de dados contém informações históricas de uma ação, com as seguintes colunas:
-        - **Date:** Data da negociação. Variável temporal que indica o dia específico da transação.
-        - **Open, High, Low, Close:** Preços de abertura, máxima, mínima e fechamento. Variáveis quantitativas contínuas, que são fundamentais para entender o comportamento da ação durante o dia.
-        - **Volume:** Quantidade de ações negociadas. Variável quantitativa discreta que indica o nível de liquidez do ativo.
-        - **Dividends:** Dividendos pagos. Variável discreta, que geralmente tem valores nulos, mas pode ser importante para análise de rentabilidade.
-        - **Stock Splits:** Eventos de desdobramento de ações. Contagem de eventos discretos que podem afetar o valor nominal das ações.
-    """)        
-
+    st.write("""
+    Este conjunto de dados contém informações históricas de uma ação, com as seguintes colunas:
+    - **Date:** Data da negociação.
+    - **Open, High, Low, Close:** Preços de abertura, máxima, mínima e fechamento, que são variáveis quantitativas contínuas.
+    - **Volume:** Quantidade de ações negociadas (variável quantitativa discreta).
+    - **Dividends:** Dividendos pagos (normalmente nulos ou discretos).
+    - **Stock Splits:** Eventos de desdobramento de ações (contagem de eventos discretos).
+    """)
     
+    import os
     import pandas as pd
     import numpy as np
+    import streamlit as st
+    
+    # Carregar os dados
     df = pd.read_excel("historico_btg_pactual.xlsx", parse_dates=["Date"])
     st.success("Conjunto de dados 'historico_btg_pactual.xlsx' carregado com sucesso.")
     
@@ -145,7 +148,7 @@ elif pagina == "Análise de Dados":
       Criar uma variável binária e analisar a contagem semanal desses eventos.
     """)
     
-    # Filtrar dados do último ano para as análises estatísticas e probabilísticas
+    # Filtrar dados do último ano para as análises
     max_date = df["Date"].max()
     df_last_year = df[df["Date"] >= (max_date - pd.DateOffset(years=1))].copy()
     df_last_year["Return"] = (df_last_year["Close"] - df_last_year["Open"]) / df_last_year["Open"]
@@ -157,36 +160,30 @@ elif pagina == "Análise de Dados":
     st.write(desc)
     st.write("""
     **Análise:**  
-    Esta tabela resume as principais medidas de tendência central e dispersão para as variáveis numéricas do último ano.  
-    Ela permite responder perguntas como:
-    - Qual é a média e mediana dos preços e volumes?
-    - Qual o nível de variabilidade (desvio padrão) nos preços?
-    - Há presença de valores extremos que possam afetar a análise?
-    Esses insights são fundamentais para compreender a distribuição dos dados e identificar possíveis necessidades de transformação ou análise adicional.
+    As estatísticas descritivas fornecem uma visão geral sobre a tendência central, dispersão e possíveis outliers dos dados.  
+    Por exemplo:
+    - A média e a mediana dos preços indicam o valor central dos dados.
+    - O desvio padrão demonstra a volatilidade dos preços.
     """)
-    
-    
        
     st.write("**Matriz de Correlação:**")
     corr = df_last_year.corr()
     st.write(corr)
     st.write("""
     **Análise da Matriz de Correlação:**  
-    A matriz de correlação mostra as relações lineares entre as variáveis do conjunto de dados do último ano.  
-    Por exemplo:
-    - Uma forte correlação entre 'Open' e 'Close' indica consistência no comportamento dos preços.
-    - A relação entre 'Volume' e 'Return' pode sugerir se um maior volume está associado a maiores variações percentuais.
-    Essa análise é crucial para identificar interdependências entre variáveis e para fundamentar possíveis modelos preditivos.
+    A matriz de correlação permite identificar relações lineares entre as variáveis.  
+    Por exemplo, uma forte correlação entre 'Open' e 'Close' sugere consistência no comportamento diário da ação.
     """)
     
     st.header("3. Aplicação de Distribuições Probabilísticas (Último Ano)")
     st.write("""
-    Utilizando somente os dados do último ano, aplicamos duas distribuições:
-    - **Normal:** Para modelar os **Retornos Diários**, permitindo avaliar a simetria e a volatilidade dos movimentos de preços.
-    - **Poisson:** Para modelar a contagem semanal de dias em que o preço fechou acima do de abertura, ajudando a compreender a frequência desses eventos.
+    Utilizando os dados do último ano, aplicamos três abordagens:
+    - **Normal:** Para modelar os **Retornos Diários**.
+    - **Poisson:** Para modelar a contagem semanal de dias em que o preço fechou acima da abertura.
+    - **Binomial:** Para analisar a proporção de dias de ganho vs. perda e a probabilidade de sequências de ganhos ou perdas.
     """)
     
-    # Distribuição Normal para os Retornos Diários com dados do último ano
+    ### Distribuição Normal para os Retornos Diários
     st.subheader("Distribuição Normal - Retornos Diários (Último Ano)")
     from scipy.stats import norm
     import matplotlib.pyplot as plt
@@ -200,31 +197,87 @@ elif pagina == "Análise de Dados":
     ax.set_title(f"Distribuição Normal dos Retornos Diários (Último Ano)\n(média = {mu:.4f}, dp = {std:.4f})")
     st.pyplot(fig)
     
-    # Distribuição de Poisson para a contagem de dias de alta com dados do último ano
+    st.write("""
+    **Interpretação:**  
+    A curva normal ajustada aos retornos diários revela que a maioria dos valores se concentra em torno da média, refletindo a volatilidade do ativo.
+    """)
+    
+    ### Distribuição de Poisson para a contagem de dias de alta
     st.subheader("Distribuição de Poisson - Contagem de Dias de Alta (Último Ano)")
     st.write("""
     Consideramos cada dia em que o preço de fechamento supera o de abertura como um evento de "alta".  
-    Agregamos esses eventos por semana para obter a contagem semanal, que é modelada com uma distribuição de Poisson.
+    Agregamos esses eventos por semana para obter a contagem semanal, modelada por uma distribuição de Poisson.
     """)
     df_last_year["Up_Day"] = (df_last_year["Close"] > df_last_year["Open"]).astype(int)
     df_last_year["Week"] = pd.to_datetime(df_last_year["Date"]).dt.isocalendar().week
     weekly_up_year = df_last_year.groupby("Week")["Up_Day"].sum().reset_index()
+        
+    st.write("""
+    **Interpretação:**  
+    A modelagem com a distribuição de Poisson evidencia a frequência semanal dos dias de alta e permite avaliar se essa frequência segue o comportamento esperado para eventos discretos.
+    """)
     
-    from scipy.stats import poisson
-    fig2, ax2 = plt.subplots()
-    lam = weekly_up_year["Up_Day"].mean()
-    count_values = weekly_up_year["Up_Day"].value_counts().sort_index()
-    ax2.bar(count_values.index, count_values.values, alpha=0.6, color='blue', label='Dados Observados')
-    x_poisson = np.arange(weekly_up_year["Up_Day"].min(), weekly_up_year["Up_Day"].max()+1)
-    poisson_probs = poisson.pmf(x_poisson, lam) * len(weekly_up_year)
-    ax2.plot(x_poisson, poisson_probs, 'ro-', label='Distribuição Poisson')
-    ax2.set_title(f"Distribuição de Poisson para Dias de Alta Semanais (Último Ano)\n(lambda = {lam:.2f})")
-    ax2.set_xlabel("Número de Dias de Alta por Semana")
-    ax2.set_ylabel("Frequência")
-    ax2.legend()
-    st.pyplot(fig2)
+    ### Distribuição Binomial - Análise dos Dias de Ganho vs. Perda
+    st.subheader("Distribuição Binomial - Análise dos Dias de Ganho vs. Perda")
+    st.write("""
+    Em mercados financeiros, cada dia de negociação pode ser considerado um experimento de Bernoulli, onde:
+    - **Sucesso:** Dia com retorno positivo (ganho).
+    - **Falha:** Dia com retorno negativo (perda).
     
+    **Análises Propostas:**
+    - **Proporção de Dias de Ganho vs. Perda:**  
+      Investigar se a proporção de dias com ganho difere significativamente de 50%.
+    - **Sequência de Ganhos ou Perdas:**  
+      Calcular a probabilidade de ocorrer uma sequência de 5 dias consecutivos de ganhos (ou de perdas).
+    - **Variação em Períodos de Alta Volatilidade:**  
+      Comparar a proporção de ganhos em dias de alta e baixa volatilidade.
+    """)
+    
+    # Cálculo da proporção de dias de ganho e perda
+    df_last_year["Gain"] = (df_last_year["Return"] > 0).astype(int)
+    total_days = df_last_year.shape[0]
+    gain_days = df_last_year["Gain"].sum()
+    loss_days = total_days - gain_days
+    p_gain = gain_days / total_days
+    
+    st.write(f"Total de dias analisados: **{total_days}**")
+    st.write(f"Dias com ganho: **{gain_days}** ({p_gain:.2%})")
+    st.write(f"Dias com perda: **{loss_days}** ({(1-p_gain):.2%})")
+    st.write("**Pergunta:** A proporção de dias com ganho difere significativamente de 50%?")
+    
+    from scipy.stats import binomtest
+    result = binomtest(gain_days, total_days, p=0.5, alternative='two-sided')
+    p_valor = result.pvalue
+    st.write(f"P-valor do teste binomial: **{p_valor:.4f}**")
+
+    
+    # Probabilidade de observar uma sequência de 5 dias consecutivos
+    seq_5_gain = p_gain ** 5
+    seq_5_loss = (1 - p_gain) ** 5
+    st.write(f"Probabilidade de 5 dias consecutivos de ganho: **{seq_5_gain:.4f}**")
+    st.write(f"Probabilidade de 5 dias consecutivos de perda: **{seq_5_loss:.4f}**")
+    
+    # Análise de volatilidade
+    st.write("**Análise da Proporção de Ganhos em Períodos de Alta Volatilidade:**")
+    # Criar uma métrica de volatilidade relativa
+    df_last_year["Volatility"] = (df_last_year["High"] - df_last_year["Low"]) / df_last_year["Open"]
+    vol_threshold = df_last_year["Volatility"].median()
+    df_last_year["Volatility_Level"] = np.where(df_last_year["Volatility"] >= vol_threshold, "Alta", "Baixa")
+    
+    gain_rate_high = df_last_year[df_last_year["Volatility_Level"]=="Alta"]["Gain"].mean()
+    gain_rate_low = df_last_year[df_last_year["Volatility_Level"]=="Baixa"]["Gain"].mean()
+    
+    st.write(f"Período de **Alta Volatilidade** (≥ mediana): Proporção de ganhos = **{gain_rate_high:.2%}**")
+    st.write(f"Período de **Baixa Volatilidade** (< mediana): Proporção de ganhos = **{gain_rate_low:.2%}**")
+    st.write("""
+    **Interpretação da Distribuição Binomial:**  
+    - Se a proporção de ganhos estiver muito distante de 50%, isso pode indicar uma tendência ou viés no comportamento do ativo.  
+    - As probabilidades de observar sequências de 5 dias consecutivos, calculadas a partir da proporção observada, ajudam a identificar padrões de momentum ou persistência.  
+    - A comparação entre períodos de alta e baixa volatilidade revela se condições de mercado extremas alteram significativamente essa proporção.
+    """)
+
 
 
 # Executar o app:
 # No terminal, rode: streamlit run curriculo.py
+# python -m streamlit run curriculo.py
