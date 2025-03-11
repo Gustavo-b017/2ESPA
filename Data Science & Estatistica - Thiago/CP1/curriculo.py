@@ -108,14 +108,15 @@ elif pagina == "Análise de Dados":
     st.title("Análise de Dados - Dados de Ações")
     
     st.header("1. Apresentação dos Dados e Tipos de Variáveis")
-    st.write("""
-    Este conjunto de dados contém informações históricas de uma ação, com as seguintes colunas:
-    - **Date:** Data da negociação.
-    - **Open, High, Low, Close:** Preços de abertura, máxima, mínima e fechamento, que são variáveis quantitativas contínuas.
-    - **Volume:** Quantidade de ações negociadas (variável quantitativa discreta).
-    - **Dividends:** Dividendos pagos (normalmente nulos ou discretos).
-    - **Stock Splits:** Eventos de desdobramento de ações (contagem de eventos discretos).
-    """)
+    st.write("""    
+        Este conjunto de dados contém informações históricas de uma ação, com as seguintes colunas:
+        - **Date:** Data da negociação. Variável temporal que indica o dia específico da transação.
+        - **Open, High, Low, Close:** Preços de abertura, máxima, mínima e fechamento. Variáveis quantitativas contínuas, que são fundamentais para entender o comportamento da ação durante o dia.
+        - **Volume:** Quantidade de ações negociadas. Variável quantitativa discreta que indica o nível de liquidez do ativo.
+        - **Dividends:** Dividendos pagos. Variável discreta, que geralmente tem valores nulos, mas pode ser importante para análise de rentabilidade.
+        - **Stock Splits:** Eventos de desdobramento de ações. Contagem de eventos discretos que podem afetar o valor nominal das ações.
+    """)        
+
     
     import pandas as pd
     import numpy as np
@@ -126,7 +127,7 @@ elif pagina == "Análise de Dados":
     st.write("""
     **Interpretação dos Tipos de Dados:**
     - Os preços (Open, High, Low, Close) são dados quantitativos contínuos.
-    - O Volume, Dividends e Stock Splits são dados quantitativos discretos.
+    - O Volume é um dado quantitativo discreto.
     """)
     
     st.subheader("Perguntas Relevantes para a Análise")
@@ -164,19 +165,8 @@ elif pagina == "Análise de Dados":
     Esses insights são fundamentais para compreender a distribuição dos dados e identificar possíveis necessidades de transformação ou análise adicional.
     """)
     
-    st.write("**Estatísticas dos Retornos Diários:**")
-    ret_desc = df_last_year["Return"].describe()
-    st.write(ret_desc)
-    st.write("""
-    **Análise dos Retornos Diários:**  
-    Ao calcular os retornos diários – a variação percentual entre os preços de fechamento e abertura – obtemos uma visão da volatilidade do ativo.  
-    Essa tabela nos permite:
-    - Avaliar a média dos retornos, importante para entender a rentabilidade diária.
-    - Verificar a dispersão dos retornos, que indica o nível de risco.
-    - Investigar a existência de assimetria, sugerindo um viés em movimentos positivos ou negativos.
-    Tais informações são essenciais para modelar o risco e a performance do ativo.
-    """)
     
+       
     st.write("**Matriz de Correlação:**")
     corr = df_last_year.corr()
     st.write(corr)
@@ -219,9 +209,6 @@ elif pagina == "Análise de Dados":
     df_last_year["Up_Day"] = (df_last_year["Close"] > df_last_year["Open"]).astype(int)
     df_last_year["Week"] = pd.to_datetime(df_last_year["Date"]).dt.isocalendar().week
     weekly_up_year = df_last_year.groupby("Week")["Up_Day"].sum().reset_index()
-    
-    st.write("**Contagem Semanal de Dias de Alta (Último Ano):**")
-    st.write(weekly_up_year)
     
     from scipy.stats import poisson
     fig2, ax2 = plt.subplots()
