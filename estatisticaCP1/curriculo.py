@@ -121,7 +121,7 @@ elif pagina == "Skills":
 elif pagina == "Análise de Dados":
   st.title("Análise de Dados - Ação do BTG Pactual")
   
-  ###########################################
+  ###########################################333
   # 1. Apresentação dos Dados e Tipos de Variáveis
   ###########################################
   st.header("1. Apresentação dos Dados e Tipos de Variáveis")
