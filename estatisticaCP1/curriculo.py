@@ -26,7 +26,7 @@ with st.sidebar:
 # Conteúdo da página "Home"
 if pagina == "Home":
   st.title("Gustavo Bezerra Assumção")
-  st.image("data/perfil na floresta.png", width=200)
+  st.image("perfil na floresta.png", width=200)
   st.write("São Paulo, SP, Brasil")
   st.write("📧 Email: gustavobassumcaog@gmail.com")
   st.write("🔗 [LinkedIn](https://www.linkedin.com/in/gustavo-bezerra-assum%C3%A7%C3%A3o-829202289/)")
@@ -132,7 +132,7 @@ elif pagina == "Análise de Dados":
   """)
   
   # Carregar os dados
-  df = pd.read_excel("data/historico_btg_pactual.xlsx", parse_dates=["Date"])
+  df = pd.read_excel("historico_btg_pactual.xlsx", parse_dates=["Date"])
   st.success("Conjunto de dados '/historico_btg_pactual.xlsx' carregado com sucesso.")
   st.dataframe(df.head())
   
