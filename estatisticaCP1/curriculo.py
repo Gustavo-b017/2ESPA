@@ -1,4 +1,10 @@
-# Configuração inicial
+"""
+Aplicativo Currículo - Gustavo Bezerra Assumção
+Autor: Gustavo Bezerra Assumção
+Descrição: Exibe informações pessoais, acadêmicas, profissionais e análises de dados.
+"""
+
+# Imports necessários
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -6,13 +12,18 @@ import numpy as np
 import plotly.express as px
 from scipy.stats import norm
 
-st.set_page_config(page_title="Currículo - Gustavo Assumção", layout="wide")
+# Configuração da página
+st.set_page_config(
+  page_title="Currículo - Gustavo Assumção",
+  layout="wide"
+)
 
 # Barra lateral para navegação
-st.sidebar.title("Navegação")
-pagina = st.sidebar.radio("Ir para:", ["Home", "Formação e Experiência", "Skills", "Análise de Dados"])
+with st.sidebar:
+  st.title("Navegação")
+  pagina = st.radio("Ir para:", ["Home", "Formação e Experiência", "Skills", "Análise de Dados"])
 
-# Home
+# Conteúdo da página "Home"
 if pagina == "Home":
   st.title("Gustavo Bezerra Assumção")
   st.image("perfil na floresta.png", width=200)
