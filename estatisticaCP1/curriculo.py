@@ -132,7 +132,7 @@ elif pagina == "Análise de Dados":
   """)
   
   # Carregar os dados
-  df = pd.read_excel("./historico_btg_pactual.xlsx", parse_dates=["Date"])
+  df = pd.read_excel("https://github.com/Gustavo-b017/2ESPA/blob/4cd7d6f9d3247790f1e041ad7be02d3e79b27cb9/estatisticaCP1/historico_btg_pactual.xlsx", parse_dates=["Date"])
   st.success("Conjunto de dados 'historico_btg_pactual.xlsx' carregado com sucesso.")
   st.dataframe(df.head())
   
