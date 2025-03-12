@@ -64,7 +64,7 @@ if pagina == "Home":
 
     * Comprometido com o aprendizado contínuo, possuo certificações em:
         * SQL
-        *Java
+        * Java
         * Python
         * BlockChain 
         * Git e GitHub
@@ -94,9 +94,10 @@ elif pagina == "Formação e Experiência":
     * Montando o layout em HTML, com estilização do CSS puro (tudo dentro do laravel 11). 
   """)
 
-  st.subheader("Projeto Acadêmico: Sijia")
+  st.subheader("Projeto Acadêmico:")
   st.write("""
-    - Plataforma voltada para a experiência de pacientes pediátricos
+    * ### Sijia
+      - Plataforma voltada para a experiência de pacientes pediátricos
   """)
 
 # Skills
