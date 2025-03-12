@@ -15,7 +15,7 @@ pagina = st.sidebar.radio("Ir para:", ["Home", "Formação e Experiência", "Ski
 # Home
 if pagina == "Home":
   st.title("Gustavo Bezerra Assumção")
-  st.image("perfil_na_floresta.png", width=150)
+  st.image("perfil na floresta.png", width=200)
   st.write("São Paulo, SP, Brasil")
   st.write("📧 Email: gustavobassumcaog@gmail.com")
   st.write("🔗 [LinkedIn](https://www.linkedin.com/in/gustavo-bezerra-assum%C3%A7%C3%A3o-829202289/)")
