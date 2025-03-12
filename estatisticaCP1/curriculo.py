@@ -27,6 +27,7 @@ with st.sidebar:
 if pagina == "Home":
   st.title("Gustavo Bezerra Assumção")
   st.image("perfil na floresta.png", width=200)
+  st.image("https://drive.google.com/file/d/1NPNPIZ9pX9NHsymAJ6fJOqKVCNiSNAH4/view?usp=sharing", width=200)
   st.write("São Paulo, SP, Brasil")
   st.write("📧 Email: gustavobassumcaog@gmail.com")
   st.write("🔗 [LinkedIn](https://www.linkedin.com/in/gustavo-bezerra-assum%C3%A7%C3%A3o-829202289/)")
@@ -133,7 +134,7 @@ elif pagina == "Análise de Dados":
   
   # Carregar os dados
   df = pd.read_excel("historico_btg_pactual.xlsx", parse_dates=["Date"])
-  st.success("Conjunto de dados '/historico_btg_pactual.xlsx' carregado com sucesso.")
+  st.success("Conjunto de dados 'https://docs.google.com/spreadsheets/d/18h_dJ2QYdrTM6qctShdUiqBj43Njn7m-/edit?usp=sharing&ouid=117899714651708812128&rtpof=true&sd=true' carregado com sucesso.")
   st.dataframe(df.head())
   
   st.write("""
